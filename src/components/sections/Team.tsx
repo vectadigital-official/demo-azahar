@@ -34,18 +34,20 @@ export default function Team() {
     const triggers: ReturnType<typeof ScrollTrigger.create>[] = []
 
     cardsRef.current.forEach((card, i) => {
-      gsap.set(card, { opacity: 0, y: 60 })
+      // Clip-path wipe: la tarjeta se revela de arriba hacia abajo
+      gsap.set(card, { clipPath: 'inset(100% 0% 0% 0%)', opacity: 1 })
+      const info = card.querySelector('.card-info') as HTMLElement
+      if (info) gsap.set(info, { opacity: 0, y: 18 })
+
       triggers.push(
         ScrollTrigger.create({
           trigger: card,
-          start: 'top 82%',
+          start: 'top 84%',
           once: true,
           onEnter: () => {
-            gsap.to(card, {
-              opacity: 1, y: 0,
-              duration: 0.8, ease: 'power3.out',
-              delay: i * 0.12,
-            })
+            const tl = gsap.timeline({ delay: i * 0.14 })
+            tl.to(card, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'power4.inOut' })
+            if (info) tl.to(info, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.45')
           },
         })
       )
@@ -86,7 +88,7 @@ export default function Team() {
               </div>
 
               {/* Info */}
-              <div className="p-7 flex-1 flex flex-col gap-4">
+              <div className="card-info p-7 flex-1 flex flex-col gap-4">
                 <div>
                   <h3 className="heading text-text" style={{ fontSize: 'clamp(1.1rem, 1.8vw, 1.5rem)' }}>
                     {m.name}

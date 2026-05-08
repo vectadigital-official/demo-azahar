@@ -7,21 +7,22 @@ import MagneticButton from '@/components/ui/MagneticButton'
 import Marquee from '@/components/ui/Marquee'
 
 const STATS = [
-  { value: '+2.400', label: 'Pacientes' },
-  { value: '15',     label: 'Años' },
-  { value: '98%',    label: 'Satisfacción' },
-  { value: '#1',     label: 'Invisalign Valencia' },
+  { value: '+2.400', label: 'Pacientes',          num: 2400, fmt: (n: number) => `+${n.toLocaleString('es-ES')}` },
+  { value: '15',     label: 'Años',               num: 15,   fmt: (n: number) => String(n) },
+  { value: '98%',    label: 'Satisfacción',        num: 98,   fmt: (n: number) => `${n}%` },
+  { value: '#1',     label: 'Invisalign Valencia', num: null, fmt: null },
 ]
 
 export default function Hero() {
-  const titleRef  = useRef<HTMLHeadingElement>(null)
-  const labelRef  = useRef<HTMLParagraphElement>(null)
-  const descRef   = useRef<HTMLParagraphElement>(null)
-  const statsRef  = useRef<HTMLDivElement>(null)
-  const ctaRef    = useRef<HTMLDivElement>(null)
-  const badgeRef  = useRef<HTMLDivElement>(null)
-  const imgRef    = useRef<HTMLDivElement>(null)
-  const overlayRef = useRef<HTMLDivElement>(null)
+  const titleRef    = useRef<HTMLHeadingElement>(null)
+  const labelRef    = useRef<HTMLParagraphElement>(null)
+  const descRef     = useRef<HTMLParagraphElement>(null)
+  const statsRef    = useRef<HTMLDivElement>(null)
+  const statValRefs = useRef<HTMLParagraphElement[]>([])
+  const ctaRef      = useRef<HTMLDivElement>(null)
+  const badgeRef    = useRef<HTMLDivElement>(null)
+  const imgRef      = useRef<HTMLDivElement>(null)
+  const overlayRef  = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const title = titleRef.current
@@ -44,13 +45,26 @@ export default function Hero() {
         duration: 1.0, ease: 'power4.out',
         stagger: { amount: 0.35 },
       })
-      .to(imgRef.current,   { clipPath: 'inset(0% 0% 0% 0%)', opacity: 1, duration: 1.2, ease: 'power4.out' }, '-=0.75')
+      .to(imgRef.current,     { clipPath: 'inset(0% 0% 0% 0%)', opacity: 1, duration: 1.2, ease: 'power4.out' }, '-=0.75')
       .to(overlayRef.current, { opacity: 1, duration: 0.6 }, '-=0.4')
-      .to(labelRef.current, { opacity: 1, y: 0, duration: 0.55 }, '-=0.5')
-      .to(descRef.current,  { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
-      .to(statsRef.current, { opacity: 1, y: 0, duration: 0.5 }, '-=0.35')
-      .to(ctaRef.current,   { opacity: 1, y: 0, duration: 0.55 }, '-=0.35')
-      .to(badgeRef.current, { opacity: 1, scale: 1, rotate: -5, duration: 0.7, ease: 'back.out(1.8)' }, '-=0.4')
+      .to(labelRef.current,   { opacity: 1, y: 0, duration: 0.55 }, '-=0.5')
+      .to(descRef.current,    { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
+      .to(statsRef.current,   { opacity: 1, y: 0, duration: 0.5 }, '-=0.35')
+      .to(ctaRef.current,     { opacity: 1, y: 0, duration: 0.55 }, '-=0.35')
+      .to(badgeRef.current,   { opacity: 1, scale: 1, rotate: -5, duration: 0.7, ease: 'back.out(1.8)' }, '-=0.4')
+
+    // Contadores animados para las estadísticas
+    STATS.forEach((stat, i) => {
+      if (!stat.num || !stat.fmt || !statValRefs.current[i]) return
+      const el  = statValRefs.current[i]
+      const obj = { val: 0 }
+      tl.to(obj, {
+        val: stat.num,
+        duration: 1.8,
+        ease: 'power2.out',
+        onUpdate: () => { el.textContent = stat.fmt!(Math.round(obj.val)) },
+      }, '-=1.6')
+    })
 
     /* Parallax */
     const parallax = gsap.to(imgRef.current, {
@@ -190,9 +204,10 @@ export default function Hero() {
         className="container grid grid-cols-2 lg:grid-cols-4 gap-px bg-white/5 border-t border-white/5"
         style={{ opacity: 0 }}
       >
-        {STATS.map((s) => (
+        {STATS.map((s, i) => (
           <div key={s.label} className="bg-bg px-6 py-5">
             <p
+              ref={(el) => { if (el) statValRefs.current[i] = el }}
               className="text-accent tabular-nums mb-1"
               style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 'clamp(1.5rem, 2.8vw, 2.2rem)', letterSpacing: '-0.03em' }}
             >

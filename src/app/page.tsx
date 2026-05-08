@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useLenis } from '@/hooks/useLenis'
+import { useLenis, getLenis } from '@/hooks/useLenis'
 import { gsap } from '@/lib/gsap'
 import Cursor from '@/components/ui/Cursor'
 import Loader from '@/components/ui/Loader'
@@ -27,8 +27,27 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef    = useRef<HTMLDivElement>(null)
+  const skewRef    = useRef<HTMLDivElement>(null)
   const didOpenRef = useRef(false)
   useLenis()
+
+  // Scroll skew — la página se inclina ligeramente según la velocidad del scroll
+  useEffect(() => {
+    if (!loaded) return
+    const lenis = getLenis()
+    if (!lenis || !skewRef.current) return
+    const el = skewRef.current
+    const handler = ({ velocity }: { velocity: number }) => {
+      gsap.to(el, {
+        skewY: velocity * 0.022,
+        duration: 0.6,
+        ease: 'power3.out',
+        overwrite: 'auto',
+      })
+    }
+    lenis.on('scroll', handler)
+    return () => lenis.off('scroll', handler)
+  }, [loaded])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80)
@@ -166,15 +185,17 @@ export default function Home() {
           </div>
         </nav>
 
-        {/* Sections */}
-        <Hero />
-        <Philosophy />
-        <Treatments />
-        <Process />
-        <Team />
-        <Testimonials />
-        <Gallery />
-        <Footer />
+        {/* Sections — dentro del wrapper de scroll skew */}
+        <div ref={skewRef} style={{ willChange: 'transform' }}>
+          <Hero />
+          <Philosophy />
+          <Treatments />
+          <Process />
+          <Team />
+          <Testimonials />
+          <Gallery />
+          <Footer />
+        </div>
       </div>
     </>
   )

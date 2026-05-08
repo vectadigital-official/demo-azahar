@@ -153,6 +153,15 @@ body {
 .overflow-x-auto::-webkit-scrollbar { display: none; }
 .overflow-x-auto { scrollbar-width: none; }
 
+/* ─── Loader line ─── */
+@keyframes lineGrow {
+  to { transform: scaleX(1); }
+}
+
+/* ─── Clip-path reveal helper ─── */
+.clip-hidden  { clip-path: inset(100% 0% 0% 0%); }
+.clip-visible { clip-path: inset(0% 0% 0% 0%); }
+
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
