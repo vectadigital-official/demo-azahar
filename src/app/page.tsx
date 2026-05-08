@@ -27,22 +27,22 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef    = useRef<HTMLDivElement>(null)
-  const skewRef    = useRef<HTMLDivElement>(null)
+  const skewRef1   = useRef<HTMLDivElement>(null)  // Hero + Philosophy
+  const skewRef2   = useRef<HTMLDivElement>(null)  // Process en adelante
   const didOpenRef = useRef(false)
   useLenis()
 
-  // Scroll skew — la página se inclina ligeramente según la velocidad del scroll
+  // Scroll skew — se aplica en dos bloques separados, excluyendo Treatments
+  // (Treatments usa GSAP pin con position:fixed, incompatible con transform en el padre)
   useEffect(() => {
     if (!loaded) return
     const lenis = getLenis()
-    if (!lenis || !skewRef.current) return
-    const el = skewRef.current
+    if (!lenis) return
     const handler = ({ velocity }: { velocity: number }) => {
-      gsap.to(el, {
-        skewY: velocity * 0.022,
-        duration: 0.6,
-        ease: 'power3.out',
-        overwrite: 'auto',
+      const skew = velocity * 0.022
+      ;[skewRef1.current, skewRef2.current].forEach(el => {
+        if (!el) return
+        gsap.to(el, { skewY: skew, duration: 0.6, ease: 'power3.out', overwrite: 'auto' })
       })
     }
     lenis.on('scroll', handler)
@@ -185,11 +185,17 @@ export default function Home() {
           </div>
         </nav>
 
-        {/* Sections — dentro del wrapper de scroll skew */}
-        <div ref={skewRef} style={{ willChange: 'transform' }}>
+        {/* Bloque 1 con skew */}
+        <div ref={skewRef1}>
           <Hero />
           <Philosophy />
-          <Treatments />
+        </div>
+
+        {/* Treatments SIN skew — GSAP pin usa position:fixed, incompatible con transform en padre */}
+        <Treatments />
+
+        {/* Bloque 2 con skew */}
+        <div ref={skewRef2}>
           <Process />
           <Team />
           <Testimonials />

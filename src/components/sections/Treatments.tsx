@@ -100,9 +100,8 @@ export default function Treatments() {
         </div>
       </div>
 
-      {/* ── DESKTOP: scroll horizontal con GSAP ── */}
-      <div className="hidden lg:block sticky top-0 h-screen">
-        <div className="h-full flex flex-col justify-center">
+      {/* ── DESKTOP: scroll horizontal con GSAP (pin gestionado por GSAP, no CSS) ── */}
+      <div className="hidden lg:flex lg:h-screen flex-col justify-center">
           <div className="container flex justify-between items-end mb-8 flex-shrink-0">
             <span className="label text-accent">03 — TRATAMIENTOS</span>
             <span className="label text-muted flex items-center gap-2">
@@ -127,7 +126,6 @@ export default function Treatments() {
               <div ref={progressBarRef} className="h-full bg-accent" style={{ width: '0%', transition: 'width 0.05s linear' }} />
             </div>
           </div>
-        </div>
       </div>
 
     </section>
