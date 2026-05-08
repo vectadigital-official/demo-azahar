@@ -5,7 +5,7 @@ import { gsap, ScrollTrigger } from '@/lib/gsap'
 
 const CASES = [
   {
-    id: 'c01', label: 'Blanqueamiento',  badge: 'ANTES / DESPUÉS',
+    id: 'c01', label: 'Blanqueamiento', badge: 'ANTES / DESPUÉS',
     span: 'lg:col-span-5 lg:row-span-2',
     img: '/images/gallery/blanqueamiento.jpg',
   },
@@ -17,7 +17,7 @@ const CASES = [
   {
     id: 'c03', label: 'Implantes', badge: 'RESULTADO',
     span: 'lg:col-span-3',
-    img: '/images/gallery/implantes.jpg',
+    img: '/images/gallery/implantes-resultado.jpg',
   },
   {
     id: 'c04', label: 'Ortodoncia', badge: 'CASO REAL',
@@ -25,9 +25,9 @@ const CASES = [
     img: '/images/gallery/ortodoncia.jpg',
   },
   {
-    id: 'c05', label: 'Invisalign', badge: 'RESULTADO',
+    id: 'c05', label: 'Odontopediatría', badge: 'CASO REAL',
     span: 'lg:col-span-4',
-    img: '/images/gallery/invisalign.jpg',
+    img: '/images/gallery/odontopediatria.jpg',
   },
 ]
 
